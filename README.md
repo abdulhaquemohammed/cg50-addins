@@ -1,4 +1,4 @@
-# CG50 WJEC Add-ins
+# CG50 Add-ins
 
 Three native add-ins (`.g3a`) for the **Casio fx-CG50** graphing calculator, written in C:
 
