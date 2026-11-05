@@ -1,0 +1,10 @@
+build-cg/
+desk/fm
+desk/maths
+desk/cs
+*_asan
+*.ppm
+web/fm.js
+web/maths.js
+web/cs.js
+.DS_Store

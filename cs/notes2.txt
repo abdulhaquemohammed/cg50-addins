@@ -1,0 +1,130 @@
+= Unit 2: Practical programming
+== Python essentials
+=== Input, output & casting
+- name = input("Name: ")      # always a string
+- age = int(input("Age: "))    # cast to integer
+- price = float(input("Price: "))
+- print("Total:", total)
+- print(f"Total: {total:.2f}")  # 2 decimal places
+- str(x), int(x), float(x), bool(x) to convert.
+! input() returns a string. Cast before doing maths.
+=== Selection
+- if score >= 70:
+-     grade = "A"
+- elif score >= 60:
+-     grade = "B"
+- else:
+-     grade = "C"
+- Comparison: == != < > <= >=. Logic: and, or, not.
+- match value: / case 1: ... (Python 3.10+) for CASE.
+=== Loops
+# Count controlled
+- for i in range(10):        # 0 to 9
+- for i in range(1, 11):     # 1 to 10
+- for i in range(10, 0, -1): # countdown
+# Condition controlled
+- while total < 100:
+-     total += 5
+# Repeat-until style
+- while True:
+-     x = int(input())
+-     if x > 0: break
+=== String handling
+- len(s), s.upper(), s.lower(), s.strip()
+- s[0] first char, s[-1] last, s[2:5] chars 2-4.
+- s.find("x") index (-1 if missing), s.count("a")
+- s.replace("a", "b"), s.split(","), ",".join(list)
+- ord("A") = 65, chr(65) = "A"
+- s.isdigit(), s.isalpha()
+- for ch in s: loops over characters.
+=== Lists & 2D lists
+- nums = [3, 1, 4]; nums.append(5); nums.remove(1); nums.pop(0)
+- len(nums), sum(nums), max(nums), min(nums), sorted(nums)
+- if 4 in nums:   # membership
+- grid = [[0]*3 for _ in range(3)]   # 3x3
+- grid[row][col] = 5
+- for row in grid:
+-     for item in row: ...
+! Don't use [[0]*3]*3: rows become the same list.
+=== Functions & procedures
+- def area(w, h):
+-     return w * h
+- def greet(name):        # procedure: no return
+-     print("Hi", name)
+- Local variables inside; pass values in as parameters.
+- global x  # only if you really must change a global.
+=== File handling
+# Read
+- with open("data.txt", "r") as f:
+-     for line in f:
+-         parts = line.strip().split(",")
+# Write (overwrite) / append
+- with open("out.txt", "w") as f:
+-     f.write(name + "," + str(score) + "\n")
+- "a" mode appends instead of overwriting.
+! Always strip() the newline, and convert numbers from strings.
+=== Validation routines
+- while True:
+-     s = input("Age 11-18: ")
+-     if s.isdigit() and 11 <= int(s) <= 18:
+-         break
+-     print("Invalid, try again")
+- Presence: if s.strip() == "".
+- Length: if len(pw) < 8.
+- Format: check each char, or s[0].isalpha() etc.
+- try: x = float(s) / except ValueError: for type checks.
+=== Searching code
+# Linear
+- def linear(a, t):
+-     for i in range(len(a)):
+-         if a[i] == t: return i
+-     return -1
+# Binary
+- def binary(a, t):
+-     lo, hi = 0, len(a) - 1
+-     while lo <= hi:
+-         mid = (lo + hi) // 2
+-         if a[mid] == t: return mid
+-         elif a[mid] < t: lo = mid + 1
+-         else: hi = mid - 1
+-     return -1
+=== Sorting code
+# Bubble
+- for p in range(len(a) - 1):
+-     swapped = False
+-     for i in range(len(a) - 1 - p):
+-         if a[i] > a[i+1]:
+-             a[i], a[i+1] = a[i+1], a[i]
+-             swapped = True
+-     if not swapped: break
+# Insertion
+- for i in range(1, len(a)):
+-     item = a[i]; j = i - 1
+-     while j >= 0 and a[j] > item:
+-         a[j+1] = a[j]; j -= 1
+-     a[j+1] = item
+=== Records & classes
+- class Student:
+-     def __init__(self, name, mark):
+-         self.name = name
+-         self.mark = mark
+-     def passed(self):
+-         return self.mark >= 40
+- s = Student("Ali", 72); print(s.name, s.passed())
+- Array of records: students = [Student(...), ...]
+- Sort records: students.sort(key=lambda s: s.mark)
+=== Useful snippets
+- Random: import random; random.randint(1, 6)
+- Rounding: round(x, 2); integer division //, remainder %
+- Running total: total = 0; for x in nums: total += x
+- Count: count = 0; if cond: count += 1
+- Max manual: best = a[0]; for x in a: if x > best: best = x
+- Average: sum(a) / len(a)
+- Menu loop: while choice != "Q": ...
+=== Exam technique
+- Read the whole task first; plan with comments.
+- Build and TEST in small steps; run often.
+- Use meaningful names, comments and indentation (marks for quality).
+- Validate inputs where asked.
+- Test with normal, boundary and erroneous data; keep evidence if required.
+- Save regularly. If stuck, get partial functionality working.

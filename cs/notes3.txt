@@ -1,0 +1,217 @@
+= Unit 3: Programming & system dev
+== Data structures
+=== Stacks
+- LIFO: last in, first out. One pointer: top.
+- Push: if not full, top = top + 1, stack[top] = item.
+- Pop: if not empty, item = stack[top], top = top - 1.
+- Peek: read top without removing.
+- Errors: overflow (push when full), underflow (pop when empty).
+- Uses: subroutine calls/return addresses, undo, back button, reversing, evaluating expressions (RPN), recursion.
+=== Queues
+- FIFO: first in, first out. Pointers: front and rear.
+- Enqueue at rear, dequeue from front.
+# Linear queue
+- Space at the front is wasted as items leave.
+# Circular queue
+- Rear wraps round: rear = (rear + 1) MOD size. Reuses space. Track count to tell full from empty.
+- Priority queue: items leave by priority, not arrival.
+- Uses: print queues, keyboard buffer, CPU scheduling, BFS.
+=== Linked lists
+- Dynamic: each node holds data + pointer to the next node. Start pointer; last node's pointer = null.
+- Free list holds unused nodes (array implementation).
+# Insert
+- Get a free node, store data, set its pointer to the next node, update the previous node's pointer to it.
+# Delete
+- Change the previous node's pointer to skip the node; return the node to the free list.
+- Pros: no shifting items, grows/shrinks. Cons: no direct index access (must traverse), extra memory for pointers.
+=== Binary trees
+- Each node: left pointer, data, right pointer. Root at the top.
+- Binary search tree: left subtree < node < right subtree.
+- Insert: compare from the root, go left if smaller, right if bigger, until an empty pointer.
+- Search is O(log n) if balanced, O(n) if unbalanced (like a list).
+# Traversals
+- Pre-order: node, left, right (copying a tree; prefix).
+- In-order: left, node, right (gives sorted order for a BST).
+- Post-order: left, right, node (deleting a tree; postfix/RPN).
+! Trick: draw a dot left/below/right of each node and trace round the outside.
+=== Hash tables
+- A hash function turns a key into an index (e.g. key MOD table size).
+- Direct access: O(1) on average.
+- Collision: two keys hash to the same index.
+- Handling: linear probing (next free slot), chaining (linked list at each index), overflow area.
+- Good hash function: fast, spreads keys evenly, few collisions. Load factor kept below ~70%.
+=== Arrays up to 3D
+- 3D array: e.g. marks[class][student][test]. Use triple nested loops.
+- Static arrays: fixed size, contiguous, O(1) access by index.
+- Implementing stacks/queues/lists using arrays + pointer variables.
+== Logical operations
+=== NAND & NOR
+- NAND: NOT(A AND B). 0 only when both inputs are 1.
+- NOR: NOT(A OR B). 1 only when both inputs are 0.
+- Both are universal: any circuit can be built from just NAND (or just NOR) gates.
+- NOT A = A NAND A.
+=== De Morgan's laws
+- NOT(A AND B) = NOT A OR NOT B
+- NOT(A OR B) = NOT A AND NOT B
+- Rule: break the bar, change the sign (. <-> +).
+- Use to simplify or to convert to NAND/NOR only.
+! Show each law application on its own line.
+=== Masking & XOR encryption
+- XOR plaintext with a key; XOR again with the same key gets the original back (A XOR K XOR K = A).
+- e.g. 0110 XOR 1010 = 1100; 1100 XOR 1010 = 0110.
+- Secure only if the key is random, as long as the message, and used once (one-time pad).
+- Masks: AND to clear/test bits, OR to set, XOR to toggle.
+=== Simplifying expressions
+- Use identities, absorption, De Morgan, and Karnaugh-style grouping by inspection.
+- Example: A.B + A.NOT B = A.(B + NOT B) = A.1 = A.
+- Example: NOT(NOT A + B) = A . NOT B (De Morgan then double negation).
+- Check with a truth table.
+== Algorithms & programs
+=== Recursion
+- A subroutine that calls itself.
+- Needs a base case (stopping condition) and must move towards it.
+- Each call is pushed onto the call stack (parameters, local variables, return address).
+- Pros: elegant for naturally recursive problems (trees, factorial, quicksort).
+- Cons: more memory, slower, stack overflow if too deep.
+# Example
+- def fact(n):
+-     if n <= 1: return 1
+-     return n * fact(n - 1)
+=== Quicksort
+- Choose a pivot. Partition: items less than the pivot go left, greater go right. Pivot is now in its final place.
+- Recursively quicksort the left and right parts.
+- Average O(n log n), worst O(n^2) (bad pivot on sorted data).
+- Fast in practice, sorts in place.
+=== Merge sort
+- Split the list in half repeatedly until lists of 1, then merge pairs back in order.
+- Always O(n log n). Needs extra memory for merging. Stable.
+=== Sort & search efficiency
+- Bubble: O(n^2), best O(n) with flag.
+- Insertion: O(n^2), best O(n).
+- Quicksort: O(n log n) avg, O(n^2) worst.
+- Merge: O(n log n).
+- Linear search O(n); binary search O(log n) (needs sorted data).
+- Hash table lookup O(1) average.
+=== Big O notation
+- Describes how time (or memory) grows as input size n grows (worst case usually).
+- O(1) constant, O(log n) logarithmic, O(n) linear, O(n log n), O(n^2) polynomial/quadratic, O(2^n) exponential.
+- Ignore constants and smaller terms: 3n^2 + 5n -> O(n^2).
+- Nested loops over n usually -> O(n^2).
+! Explain in words: "doubling n quadruples the time".
+=== Shortest path (Dijkstra)
+- Finds shortest paths from a start node in a weighted graph (non-negative weights).
+- Set start distance 0, others infinity.
+- Repeat: pick the unvisited node with the smallest distance; for each neighbour, if (current + edge) < neighbour's distance, update it and record the previous node. Mark current visited.
+- Stop when the target is visited. Trace back via previous nodes for the route.
+- Uses: sat nav, network routing.
+=== Graph & tree traversal
+- Depth-first: go as deep as possible before backtracking (uses a stack/recursion).
+- Breadth-first: visit all neighbours first, level by level (uses a queue). Finds the shortest path in unweighted graphs.
+- Tree traversals: pre-order, in-order, post-order.
+=== Compression algorithms
+- RLE: runs of repeated data stored as count + value. Good for simple images, poor for varied data.
+- Dictionary (LZW): repeated sequences replaced by codes from a dictionary built as it goes.
+- Huffman: frequent characters get shorter binary codes; build a tree from frequencies (combine the two smallest repeatedly).
+- Compression ratio = original size / compressed size.
+=== Validation & verification algorithms
+- Check digit (e.g. ISBN-13): weight digits 1,3,1,3..., sum, check digit makes the total divisible by 10.
+- Modulus 11: weights, sum MOD 11.
+- Parity: even/odd number of 1s; detects single-bit errors.
+- Checksum: sum of data sent with it, recalculated on arrival.
+- Range/format checks written as loops.
+=== Testing & dry runs
+- Trace table: columns for each variable and output; follow the code line by line.
+- Dry run: execute the algorithm on paper to find logic errors.
+- Test plan with normal, boundary, erroneous data; expected vs actual.
+- Stub testing: test modules with dummy subroutines.
+== Principles of programming
+=== Programming paradigms
+- Procedural: steps + procedures, shared data.
+- Object-oriented: classes/objects, encapsulation, inheritance, polymorphism. Good for large team projects and reuse.
+- Declarative: say WHAT you want, not how (SQL, Prolog). Facts + rules + queries.
+- Functional: functions as values, no side effects, recursion over loops.
+- Event-driven: event handlers/listeners, main loop waiting for events.
+=== OOP in depth
+- Class, object (instance), constructor.
+- Encapsulation: private attributes, public getters/setters.
+- Inheritance: "is a" relationship (Car is a Vehicle).
+- Aggregation/composition: "has a" relationship.
+- Polymorphism: overriding (subclass redefines a method) and overloading.
+- Abstract class/interface: defines methods subclasses must implement.
+=== Language standardisation
+- Standards (ANSI, ISO) define a language's syntax and meaning.
+- Benefits: code portable across compilers/platforms, programmers can move between systems, consistent behaviour, easier maintenance.
+=== Syntax, BNF & syntax diagrams
+- Syntax: rules for valid statements. Ambiguity must be avoided so each statement has one meaning.
+# Backus-Naur form
+- <digit> ::= 0|1|2|3|4|5|6|7|8|9
+- <integer> ::= <digit> | <digit><integer>   (recursive)
+- ::= "is defined as", | "or", <> non-terminal.
+# Syntax diagrams
+- Same rules drawn as railway tracks: rectangles = non-terminals, ovals = terminals, loops = repetition.
+! Practice checking whether a given string is valid, step by step.
+== Systems analysis
+=== Waterfall model
+- Linear stages: requirements, analysis, design, implementation, testing, maintenance.
+- Each stage completed and signed off before the next.
+- Pros: clear structure, good documentation, easy to manage, suits fixed well-understood requirements.
+- Cons: inflexible, user sees the product late, changes are costly.
+=== Agile methods
+- Iterative: short sprints, working versions delivered frequently.
+- Close user involvement and feedback; requirements can change.
+- Examples: Scrum, XP (pair programming, test driven).
+- Pros: flexible, quick delivery, user satisfaction.
+- Cons: less documentation, harder to plan cost/time, needs committed users.
+=== Documentation at each stage
+- Analysis: requirements specification, investigation findings.
+- Design: system/data design, HCI designs, test plan.
+- Implementation: annotated code, technical docs.
+- Testing: test results, evidence.
+- Evaluation/maintenance: user guide, evaluation against requirements.
+== System design
+=== HCI design
+- Consider users' skills, age, disabilities, environment, tasks.
+- Principles: consistency, feedback, error prevention and clear messages, minimal memory load, shortcuts for experts, simple layout, appropriate colours and fonts.
+- Prototyping: build mock-ups to get user feedback early.
+=== Natural language & speech interfaces
+- Natural language: users type/speak normally; computer interprets meaning.
+- Speech recognition: needs training, problems with accents, background noise, homophones, ambiguity.
+- Uses: virtual assistants, hands-free (driving, disabilities), call centres.
+- Speech synthesis outputs spoken words (screen readers).
+=== Validating the design & evaluation
+- Check the design against requirements before building (walkthroughs, prototypes, user review).
+- Evaluation criteria: does it meet requirements? Usability, performance/speed, reliability, robustness, cost, maintainability.
+- Evaluate with user feedback and test results; suggest improvements.
+== Software engineering
+=== Development tools
+- Analysis: CASE tools, diagram software.
+- Design: DFD/ER/UML tools, prototyping tools.
+- Implementation: IDEs, code libraries, editors.
+- Testing: automated testing tools, debuggers, test harnesses.
+- Maintenance: version control, bug trackers.
+=== Version management
+- Version control (e.g. Git): tracks every change, who made it and when.
+- Can roll back to earlier versions, branch for features, merge changes.
+- Lets teams work on the same code without overwriting each other.
+- Repository (central or distributed).
+== Program construction
+=== Compiler vs interpreter vs assembler
+# Compiler
+- Translates the whole program into machine code before running; produces an executable.
+- Runs fast, code hidden, but errors listed only after compiling; recompile after changes; platform specific.
+# Interpreter
+- Translates and runs one line at a time; no executable.
+- Easy debugging (stops at the error line), portable; slower, needs the interpreter, source visible.
+# Assembler
+- Converts assembly language mnemonics into machine code (one to one).
+- Bytecode/virtual machines: compile to intermediate code run on a VM (Java).
+=== Types of error
+- Syntax error: breaks the language rules (missing bracket). Found by the translator.
+- Logic error: runs but gives the wrong result (< instead of <=). Found by testing/dry runs.
+- Run-time (execution) error: crash during running (divide by zero, index out of range, file missing).
+- Linking errors, overflow errors.
+== Moral, legal & ethical
+=== Professional codes of conduct
+- e.g. BCS Code of Conduct: act in the public interest, with professional competence and integrity, duty to employer/clients, duty to the profession.
+- Includes: respect privacy, avoid conflicts of interest, only take on work you're competent to do, report unsafe practices, keep skills up to date.
+- Ethical issues: AI bias, surveillance, automation and jobs, environmental impact, accessibility.

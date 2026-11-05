@@ -1,0 +1,225 @@
+= Unit 4: Architecture, data & comms
+== Hardware & communication
+=== Architectures: RISC vs CISC
+# CISC
+- Many complex instructions, some take several cycles. Shorter programs, more work in hardware. e.g. x86.
+# RISC
+- Small set of simple instructions, mostly one cycle each, more registers, easier pipelining, lower power. e.g. ARM in phones.
+- Harvard vs Von Neumann: separate vs shared memory for instructions and data.
+=== Pipelining
+- Fetch, decode and execute of different instructions overlap: while one executes, the next decodes and the next is fetched.
+- Increases throughput (instructions per second).
+- Problems: branches/jumps mean fetched instructions must be flushed; data dependencies cause stalls.
+=== Limits to parallelisation
+# Amdahl's law
+- Speed-up = 1 / ((1 - p) + p / n)
+- p = fraction of the program that can run in parallel, n = number of processors.
+- e.g. p = 0.8, n = 4: 1 / (0.2 + 0.2) = 2.5x faster.
+- Max speed-up (n -> infinity) = 1 / (1 - p): the sequential part limits everything.
+# Runtime
+- New time = old time x ((1 - p) + p / n).
+! Show the formula with numbers substituted.
+=== Assembly language
+- Mnemonics for machine code: LDA (load), STA (store), ADD, SUB, INP, OUT, BRA (branch always), BRZ (branch if zero), BRP (branch if positive), HLT.
+# Addressing modes
+- Immediate: operand is the actual value (#5).
+- Direct: operand is the memory address of the data.
+- Indirect: operand holds the address of the address.
+- Indexed: address = operand + index register (arrays).
+- Relative: address relative to the PC.
+! Trace programs with a table: ACC, PC, memory locations.
+=== Voice input systems
+- Microphone captures sound, ADC converts to digital, software matches phonemes/words using trained models.
+- Uses: dictation, assistants, accessibility, hands-free control.
+- Problems: accents, background noise, similar sounding words, needs training, privacy concerns.
+=== Wireless networking
+- WiFi: wireless LAN using radio (2.4 / 5 / 6 GHz). WAPs; range ~50 m; WPA2/WPA3 encryption.
+- Bluetooth: short range (~10 m), low power, pairing; peripherals, headphones.
+- Mobile 4G/5G: cellular networks; 5G faster, lower latency.
+- Issues: interference, range, security (eavesdropping), bandwidth shared between users.
+- Benefits for portable devices: mobility, no cables, easy to add users.
+== Data transmission
+=== Data transfer rates
+- Bit rate = bits per second (bps). 1 Mbps = 1,000,000 bps.
+- Time = file size (bits) / rate (bps).
+- e.g. 20 MB at 8 Mbps: 20 x 8 = 160 Mb; 160 / 8 = 20 s.
+- Bandwidth: maximum capacity of the channel. Latency: delay.
+! Convert bytes to bits (x8) first. Check if units are 1000 or 1024.
+=== Lowest-cost routing
+- Network shown as a weighted graph; weights = cost (distance, time, money, hops).
+- Use Dijkstra's algorithm to find the lowest-cost route between routers.
+- Routing tables updated as link costs change (congestion, failures).
+=== The internet as infrastructure
+- Backbone: high-capacity fibre links between major nodes/IXPs; undersea cables.
+- ISPs in tiers connect to each other.
+- Packet switching and TCP/IP make it robust (no single point of failure).
+- Supports WWW, email, VoIP, streaming, cloud, IoT.
+- Governance: ICANN (domain names), standards bodies (IETF, W3C).
+== Data representation
+=== Binary arithmetic (advanced)
+- Two's complement addition and subtraction in fixed bits.
+- Overflow (signed): adding two positives gives a negative or two negatives gives a positive (sign bit wrong).
+- Detected by the overflow flag in the status register.
+=== Floating point normalisation
+- Normalise: shift mantissa until it starts 01 (positive) or 10 (negative); adjust the exponent by the number of places shifted (left shift = decrease exponent).
+- Gives the most precision possible and a unique representation.
+- Adding floating point numbers: make exponents equal, add mantissas, normalise.
+=== Shift functions
+- Logical shift: bits move left/right, zeros fill the gaps. Left = x2, right = /2 for unsigned.
+- Arithmetic shift right: sign bit copied in, so negatives stay negative (/2 for two's complement).
+- Circular shift (rotate): bits leaving one end re-enter at the other.
+- Bits shifted out may set the carry flag; may lose precision.
+=== Overflow & underflow
+- Overflow: a result is too large for the number of bits available.
+- Underflow: a floating point result is too close to zero to be represented (smaller than the smallest normalised value), so it becomes 0.
+- Both cause errors; programs should check flags or ranges.
+== Organisation of data
+=== Hashing algorithms
+- Calculate a storage address from a key: e.g. address = key MOD number_of_buckets.
+- Folding: split key into parts and add them.
+- Mid-square: square the key and take middle digits.
+- Good: quick, even spread, few collisions.
+- Collisions -> overflow area, next free bucket, or chaining.
+=== Multi-level indexes
+- Large files: a single index would be too big to search quickly.
+- Top-level index points to lower-level indexes which point to blocks of records (like cylinder -> track -> record).
+- Fewer comparisons to find a record; must be updated when records added.
+=== Overflow & reorganisation
+- When a block is full, new records go to an overflow area (linked from the block).
+- Many overflow records -> access becomes slow.
+- Periodic reorganisation: rewrite the file with all records in order in the main area and rebuild the indexes.
+- Deleted records may only be flagged until reorganisation.
+== Databases & distributed systems
+=== Consistency, redundancy & independence
+- Data redundancy: same data stored more than once (wastes space, causes inconsistency).
+- Data inconsistency: copies disagree after an update.
+- Data integrity: data accurate and consistent (enforced by validation, referential integrity).
+- Data independence: structure of the data can change without changing the programs that use it (handled by the DBMS).
+=== Normalisation (1NF to 3NF)
+# 1NF
+- No repeating groups; every field atomic (one value); each record unique (primary key).
+# 2NF
+- In 1NF and no partial dependencies: every non-key field depends on the WHOLE primary key (matters for composite keys).
+# 3NF
+- In 2NF and no transitive dependencies: non-key fields depend only on the key, not on other non-key fields.
+- "The key, the whole key, and nothing but the key."
+- Benefits: less redundancy, no update anomalies, easier maintenance.
+=== SQL
+- SELECT name, mark FROM Student WHERE mark > 70 ORDER BY mark DESC;
+- SELECT * FROM Student, Class WHERE Student.classID = Class.classID;  (join)
+- INNER JOIN Class ON Student.classID = Class.classID
+- INSERT INTO Student (id, name) VALUES (5, 'Ali');
+- UPDATE Student SET mark = 80 WHERE id = 5;
+- DELETE FROM Student WHERE id = 5;
+- Functions: COUNT(), SUM(), AVG(), MAX(), MIN(); GROUP BY; LIKE 'A%' wildcards.
+- CREATE TABLE Student (id INT PRIMARY KEY, name VARCHAR(30));
+=== DBMS features
+- Data dictionary, query language, security (user access rights, views), backup and recovery, concurrency control (record locking), integrity checks, indexing.
+# Concurrency
+- Record locking: one user edits a record at a time, others wait (prevents lost updates).
+- Deadlock: two users each wait for the other's lock.
+- Transactions are atomic (ACID): all or nothing.
+=== Big data, warehousing & mining
+- Big data: huge volume, high velocity, wide variety; too big for traditional databases.
+- Data warehouse: large store of historical data from many sources, cleaned and organised for analysis (not day-to-day operations).
+- Data mining: searching large data sets for patterns and relationships (e.g. buying habits). Uses: marketing, fraud detection, medical research.
+- Issues: privacy, consent, security, accuracy.
+=== Distributed systems
+- Distributed database: data stored across several sites/computers but appears as one.
+- Distributed processing: tasks split across many computers on a network.
+- Pros: local access is faster, resilient (no single point of failure), scalable.
+- Cons: complex to keep data consistent, security across sites, communication delays.
+== The operating system
+=== Types of OS
+- Single-user single-task (simple embedded).
+- Single-user multitasking (desktop).
+- Multi-user (servers, mainframes): many users share resources.
+- Real-time: guaranteed response times (control systems).
+- Embedded: in devices, limited function, efficient.
+- Distributed: one OS across several machines.
+- Mobile: power management, touch, apps.
+=== Interrupts
+- Signal to the CPU that something needs attention (hardware: key press, printer out of paper; software: error; timer).
+- Checked at the end of each fetch-execute cycle.
+- If priority is higher than the current task: save registers on the stack, run the interrupt service routine (ISR), then restore registers and continue.
+- Priorities decide which interrupt is handled first; lower priority ones wait.
+=== Memory management
+- Partitioning: memory divided into fixed or variable size sections for processes.
+- Paging: memory split into equal-size pages (physical frames); a process's pages can be anywhere; page table maps them.
+- Segmentation: variable-size logical blocks (e.g. code, data).
+- Virtual memory: pages swapped to disk when RAM is full.
+- Prevents processes overwriting each other.
+=== Buffering & spooling
+- Buffer: temporary memory area holding data being transferred between devices of different speeds (e.g. CPU and printer).
+- Double buffering: one buffer filled while the other is emptied.
+- Spooling: jobs for a slow device stored on disk in a queue (print queue), so the CPU can continue.
+=== Scheduling
+- Decides which process gets the CPU next.
+- Aims: maximise throughput, fairness, fast response, avoid starvation.
+- First come first served: simple, long jobs block others.
+- Round robin: each process gets a time slice in turn.
+- Shortest job first: minimises average wait; long jobs may starve.
+- Shortest remaining time: pre-emptive version.
+- Multi-level feedback queues: several queues with priorities.
+=== Process states
+- New -> Ready -> Running -> (Blocked/waiting for I/O) -> Ready ... -> Terminated.
+- Running -> Ready when the time slice ends (pre-empted).
+- Running -> Blocked when waiting for I/O; Blocked -> Ready when it completes.
+- Process control block stores state, registers, priority.
+=== Time-slicing, polling & threading
+- Time-slicing: each process gets a short slice of CPU time in turn; gives the impression of simultaneous running.
+- Polling: CPU repeatedly checks devices to see if they need attention (wastes time compared with interrupts).
+- Threading: a process split into threads that share its memory and can run concurrently (e.g. on different cores).
+== Types of software & systems
+=== Safety-related systems
+- Failure could cause injury, death or major damage: aircraft, medical devices, nuclear plants, car braking.
+- Need: rigorous testing, formal methods, redundancy (backup systems), fail-safe design, strict standards.
+=== Control systems
+- Sensors measure the environment, ADC converts, processor compares with set values, actuators act (motors, heaters, valves).
+- Feedback loop: output affects the next input.
+- Examples: greenhouse, traffic lights, central heating, robots.
+=== Expert systems
+- Knowledge base (facts + rules), inference engine (forward/backward chaining), user interface, explanation facility.
+- Built with knowledge engineers and experts.
+- Pros: consistent, available, preserves expertise. Cons: no common sense, can't learn (unless ML), hard to maintain rules, liability if wrong.
+=== Automation
+- Machines/software do tasks previously done by people: manufacturing robots, self-checkouts, automated warehouses.
+- Pros: faster, consistent, works 24/7, safer for dangerous tasks, cheaper long term.
+- Cons: job losses, high setup cost, loss of skills, failures can stop production.
+=== Internet, intranet & extranet
+- Internet: public global network.
+- Intranet: private network inside an organisation using internet technologies (staff only).
+- Extranet: part of an intranet opened to selected outsiders (suppliers, customers).
+- Wide area information exchange: email, video conferencing, EDI, cloud services.
+== Data security & integrity
+=== Online updating issues
+- Several users updating the same data at once can cause lost updates or inconsistency.
+- Solutions: record locking, transactions, timestamps, serialisation, commit/rollback.
+- Need for immediate backup/logging (transaction logs) so data can be recovered.
+=== Cryptography
+- Plaintext encrypted into ciphertext using an algorithm and key.
+# Symmetric
+- Same key encrypts and decrypts (fast). Problem: sharing the key securely.
+# Asymmetric (public key)
+- Public key encrypts, matching private key decrypts. No need to share a secret.
+- Used to exchange symmetric keys (e.g. HTTPS/TLS).
+# Digital signatures
+- Hash of the message encrypted with the sender's PRIVATE key; receiver decrypts with the PUBLIC key and compares hashes. Proves sender and that data is unchanged.
+- Digital certificates (from a certificate authority) prove a public key belongs to an organisation.
+=== Biometrics
+- Use physical/behavioural features: fingerprint, face, iris, voice, typing pattern.
+- Pros: can't be forgotten or easily shared, quick.
+- Cons: expensive, false positives/negatives, privacy, can't be changed if stolen, injury affects it.
+=== Malicious software
+- Virus: attaches to files, spreads when they run.
+- Worm: self-replicates across networks without user action.
+- Trojan: disguised as useful software.
+- Ransomware: encrypts files, demands payment.
+- Spyware/keylogger: records activity, steals data.
+- Protection: antivirus, firewalls, updates/patches, user training, backups, not opening unknown attachments.
+=== Hacking & penetration testing
+- Hacking: unauthorised access to systems (illegal under the Computer Misuse Act).
+- Methods: brute force, phishing, SQL injection, exploiting unpatched software, social engineering.
+- Penetration testing: authorised simulated attack to find weaknesses before criminals do.
+- White box (tester has system info) vs black box (no info, like an outsider).
+- Followed by a report and fixes.

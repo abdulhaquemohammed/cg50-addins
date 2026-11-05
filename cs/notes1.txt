@@ -1,0 +1,582 @@
+= Unit 1: Fundamentals of CS
+== Hardware & communication
+=== Von Neumann architecture
+- Stored program concept: instructions AND data held together in the same main memory, in binary.
+- One CPU fetches and executes instructions one at a time (sequentially).
+- Shared buses between CPU and memory: address bus, data bus, control bus.
+# Von Neumann bottleneck
+- Instructions and data share one bus, so they can't be fetched at the same time. The CPU often waits for memory.
+# Harvard (comparison)
+- Separate memories and buses for instructions and data, so both can be fetched at once. Used in embedded systems/DSPs.
+! Exam: "stored program" = program stored in memory alongside data and can be changed.
+=== CPU components & registers
+# ALU
+- Does arithmetic (+ -) and logic (AND, OR, comparisons).
+# Control unit (CU)
+- Decodes instructions, sends control signals, coordinates the fetch-execute cycle.
+# Clock
+- Sends timing pulses. Speed in Hz (e.g. 3.2 GHz = 3.2 billion cycles/s).
+# Registers (very fast storage inside CPU)
+- PC (program counter): address of NEXT instruction.
+- MAR: address being read/written.
+- MDR (MBR): data/instruction just fetched or about to be written.
+- CIR: current instruction being decoded/executed.
+- Accumulator (ACC): results from the ALU.
+- Status register: flags e.g. carry, zero, negative, overflow.
+# Buses
+- Address bus: one way, CPU -> memory. Width sets max addressable memory (n lines = 2^n addresses).
+- Data bus: two way. Width = bits moved at once.
+- Control bus: two way. Read/write, clock, interrupt signals.
+=== Fetch-decode-execute cycle
+# Fetch
+- PC -> MAR (address of next instruction).
+- Instruction at that address copied via data bus into MDR.
+- PC incremented (PC = PC + 1).
+- MDR -> CIR.
+# Decode
+- CU splits CIR into opcode + operand and works out what to do.
+# Execute
+- Instruction carried out, e.g. ALU does maths, result to ACC, data loaded/stored, or PC changed for a jump.
+- Interrupts are checked at the end of each cycle.
+! Learn the register transfers in order: PC->MAR, [MAR]->MDR, PC+1, MDR->CIR.
+=== Memory: RAM, ROM, cache
+# RAM
+- Volatile: lost when power off. Read/write. Holds OS, running programs and data.
+# ROM
+- Non-volatile, read only. Holds the boot program (BIOS/UEFI firmware).
+# Cache
+- Very fast SRAM, small, on or near the CPU.
+- Holds frequently/recently used instructions and data so the CPU doesn't wait for slower RAM.
+- Levels: L1 (smallest, fastest, per core), L2, L3 (largest, shared).
+- Cache hit = found in cache; miss = fetch from RAM.
+# Virtual memory
+- Part of secondary storage used as extra RAM when RAM is full. Pages swapped in/out. Slow ("disk thrashing" if overused).
+=== CPU performance factors
+- Clock speed: more cycles per second = more instructions per second.
+- Number of cores: can run separate tasks in parallel (only helps if software is parallel).
+- Cache size: bigger = more hits, fewer slow RAM accesses.
+- Word length / bus widths: more bits processed or moved at once.
+! Doubling cores rarely doubles speed: some tasks can't be split, and cores share resources.
+=== Parallel processing
+- Using more than one processor (or core) to work on a task at the same time.
+- SIMD: one instruction, many data items (e.g. GPU, graphics, vector maths).
+- MIMD: many processors each running their own instructions on their own data (multicore CPUs).
+- Pipelining: overlapping fetch/decode/execute of different instructions.
+# Pros
+- Faster for tasks that split up (graphics, simulations, scientific work).
+# Cons
+- Harder to program; some tasks are sequential; overhead coordinating processors; shared memory conflicts.
+=== Input & output devices
+- Choose devices by the scenario: user, environment, data type, speed.
+# Input examples
+- Keyboard, mouse, touchscreen, scanner, barcode/QR reader, OMR, OCR, MICR (cheques), RFID, sensors (temp, light, pressure), microphone, camera, biometric scanners.
+# Output examples
+- Monitor, printers (laser fast/high volume, inkjet cheap/photo, 3D), speakers, actuators/motors, LEDs, braille display.
+# Accessibility
+- Voice input, eye tracking, puff-suck switches, screen readers, large keyboards.
+! Always justify: "barcode reader because it's fast and avoids typing errors at a till".
+=== Secondary storage
+- Non-volatile, long term storage.
+# Magnetic (HDD, tape)
+- Cheap per GB, large capacity, moving parts, slower. Tape: sequential access, backups/archives.
+# Optical (CD, DVD, Blu-ray)
+- Cheap, portable, lower capacity, easily scratched. Laser reads pits/lands.
+# Solid state (SSD, flash, SD)
+- No moving parts, fast access, robust, low power, more expensive per GB, limited write cycles.
+# Cloud
+- Accessible anywhere, scalable, needs internet, security/privacy concerns.
+! Compare using: capacity, speed, cost, portability, durability, reliability.
+=== Disk fragmentation
+- On a hard disk, files are stored in blocks. As files are created, deleted and grow, a file's blocks get scattered (fragmented).
+- The read head has to move around more, so access is slower.
+# Defragmentation
+- Utility that moves blocks so each file is stored contiguously and free space is grouped together.
+- Faster read times.
+! SSDs shouldn't be defragged: no moving head, and extra writes wear them out.
+=== Networks
+- LAN: small area (one site), owned by organisation, own cabling/WiFi.
+- WAN: large area, connects LANs, uses third party infrastructure (telecoms).
+# Topologies
+- Bus: one cable, cheap, collisions, single point of failure.
+- Star: central switch, reliable (one cable fails = one node), easy to add nodes, switch is a single point of failure.
+- Ring: data passes around in one direction, no collisions.
+- Mesh: many links, very reliable/redundant, expensive.
+# Client-server vs peer-to-peer
+- Client-server: central server manages files, security, backups. Costly, needs admin.
+- P2P: all equal, cheap, no central control, harder backup/security.
+# Hardware
+- NIC, switch (sends to right device by MAC), router (between networks by IP), WAP, modem.
+=== Protocols & TCP/IP
+- Protocol: agreed set of rules for communication (format, timing, error checking).
+# TCP/IP stack (4 layers)
+- Application: HTTP/HTTPS, FTP, SMTP, POP3/IMAP, DNS.
+- Transport: TCP (splits into packets, numbers them, reliable, resends lost) / UDP (fast, no checks, streaming).
+- Internet/Network: IP addressing and routing of packets.
+- Link: physical transmission, MAC addresses, Ethernet/WiFi.
+# Why layers
+- Each layer independent, can be changed/developed separately, easier to standardise and debug.
+=== The internet
+- Internet = global network of networks. WWW = web pages accessed over the internet (a service).
+- IP address: unique address of a device (IPv4 32-bit, IPv6 128-bit).
+- URL: human-readable address, e.g. https://www.wjec.co.uk/page
+- DNS: converts domain names to IP addresses (hierarchy of DNS servers).
+- ISP: company that connects users to the internet.
+- HTTP/HTTPS: transfers web pages (HTTPS encrypted with TLS).
+- Packet switching used: data split into packets, routed independently.
+== Logical operations
+=== AND, OR, NOT, XOR
+# AND (A.B)
+- 1 only if both are 1.
+# OR (A+B)
+- 1 if either (or both) is 1.
+# NOT (A-bar)
+- Inverts.
+# XOR (A (+) B)
+- 1 if exactly one is 1 (inputs differ).
+# Truth table rows
+- n inputs -> 2^n rows. Count up in binary: 00, 01, 10, 11.
+! Draw the table systematically and include intermediate columns for marks.
+=== Masking
+- Apply a logical operation with a "mask" to change or test certain bits.
+- AND with 0 clears bits; AND with 1 keeps bits. e.g. 1011 0110 AND 0000 1111 = 0000 0110 (keep lower nibble).
+- OR with 1 sets bits; OR with 0 keeps. e.g. set bit 7: OR 1000 0000.
+- XOR with 1 toggles (flips) bits; XOR with 0 keeps.
+- Testing a bit: AND with a mask that has 1 in that position; result non-zero = bit was set.
+! State which operation AND the mask value, then show the working.
+=== Boolean simplification
+# Laws
+- A.0 = 0, A.1 = A, A+0 = A, A+1 = 1
+- A.A = A, A+A = A
+- A.NOT A = 0, A+NOT A = 1
+- NOT NOT A = A
+- Commutative: A.B = B.A; Associative; Distributive: A.(B+C) = A.B + A.C
+- Absorption: A + A.B = A, A.(A+B) = A
+# Method
+- Expand brackets, use the laws to cancel, factorise out common terms.
+- Check with a truth table if unsure.
+! Write the name of the law you use on each line.
+== Data transmission
+=== Serial vs parallel
+# Serial
+- One bit at a time down a single wire.
+- Reliable over long distances, cheaper cables, no skew. e.g. USB, Ethernet.
+# Parallel
+- Several bits at once on multiple wires.
+- Faster over short distances, but skew (bits arrive at different times) and crosstalk over long distances. e.g. internal buses.
+! Modern links are mostly serial because high-speed serial avoids skew.
+=== Simplex, half & full duplex
+- Simplex: one direction only (e.g. TV broadcast, sensor to computer).
+- Half duplex: both directions but only one at a time (e.g. walkie-talkie).
+- Full duplex: both directions at the same time (e.g. phone call, Ethernet).
+=== Multiplexing
+- Combining several signals so they share one transmission medium.
+- A multiplexer combines; a demultiplexer separates at the other end.
+- Time division: each signal gets a time slot in turn.
+- Frequency division: each signal uses a different frequency band.
+- Saves cost of separate lines.
+=== Circuit vs packet switching
+# Circuit switching
+- Dedicated path set up for the whole communication (old telephone network).
+- Guaranteed bandwidth, data in order, but path reserved even when idle (wasteful).
+# Packet switching
+- Data split into packets; each routed independently, may take different routes; reassembled at the destination in order.
+- Efficient use of the network, resilient (re-route around failures), but packets can arrive out of order or be delayed.
+=== Packet contents
+# Header
+- Source and destination IP address.
+- Packet (sequence) number.
+- Number of packets / protocol / TTL (hop limit).
+# Payload
+- The actual data.
+# Trailer
+- Error check (checksum / CRC), end of packet marker.
+=== Collisions
+- Happen on shared media when two devices transmit at the same time and signals interfere.
+# CSMA/CD (wired)
+- Listen before sending; if a collision is detected, stop, send a jam signal, wait a random time, retry.
+# CSMA/CA (WiFi)
+- Tries to avoid collisions: listen, wait, optional RTS/CTS handshake.
+- Switches reduce collisions by giving each device its own link.
+=== Routing
+- Routers read the destination IP in each packet header and forward it towards its destination.
+- Routing tables store routes/next hops; updated dynamically.
+- Each hop decrements TTL; packet dropped at 0 (stops infinite loops).
+- Routes chosen by cost: number of hops, speed, congestion.
+== Data representation & types
+=== Bits, bytes & words
+- Bit: 0 or 1. Nibble: 4 bits. Byte: 8 bits.
+- Word: the number of bits the CPU processes as one unit (e.g. 32/64 bits).
+- Units: KB = 1000 bytes (KiB = 1024). MB, GB, TB scale by 1000 (or 1024 for binary units).
+- n bits can represent 2^n different values.
+=== Binary & hexadecimal
+# Binary to denary
+- Add the place values: 128 64 32 16 8 4 2 1. e.g. 1011 0101 = 128+32+16+4+1 = 181.
+# Hexadecimal
+- Base 16: 0-9 then A=10 ... F=15. One hex digit = one nibble.
+- Binary to hex: split into nibbles. 1011 0101 = B5.
+- Why hex: shorter, easier for humans to read, fewer errors (colour codes, MAC addresses, memory addresses).
+=== Character sets
+- Character set: every character a computer can use, each with a unique binary code.
+# ASCII
+- 7 bits = 128 characters (extended 8-bit = 256). English letters, digits, symbols, control codes. 'A' = 65, 'a' = 97, '0' = 48.
+# Unicode
+- Up to 32 bits (UTF-8/16/32). Covers all world languages, emoji. Uses more storage.
+! ASCII codes are in order, so you can compare/sort letters by code.
+=== Primitive data types
+- Integer: whole numbers (e.g. 42).
+- Real/float: numbers with a fractional part (3.14).
+- Boolean: TRUE/FALSE (1 bit logically, often a byte).
+- Character: a single symbol.
+- String: sequence of characters (strictly not primitive in all languages).
+- Date/time in some languages.
+! Choose the type for a field and justify it: phone numbers are strings (leading 0, no arithmetic).
+=== Binary arithmetic
+# Addition rules
+- 0+0=0, 0+1=1, 1+1=0 carry 1, 1+1+1=1 carry 1.
+- Overflow: result needs more bits than available (carry out of the most significant bit in unsigned).
+# Subtraction
+- Add the two's complement of the number being subtracted. Ignore the final carry out.
+# Multiplication by shifting
+- Logical shift left one place = x2; right = /2 (for unsigned).
+=== Negative numbers
+# Sign and magnitude
+- MSB is the sign (0 = +, 1 = -), rest is the magnitude. Two zeros (+0, -0); arithmetic awkward.
+# Two's complement
+- MSB has a negative place value (-128 for 8 bits).
+- To negate: invert all bits then add 1 (or copy bits from the right up to and including the first 1, then flip the rest).
+- 8-bit range: -128 to +127. One zero; normal addition works.
+- e.g. -20: 20 = 0001 0100 -> invert 1110 1011 -> +1 = 1110 1100.
+=== Floating point
+- Number = mantissa x 2^exponent. Both stored in two's complement.
+- More mantissa bits = more precision (accuracy). More exponent bits = bigger range.
+# Normalised
+- Positive: mantissa starts 0.1; negative: starts 1.0. Gives maximum precision and a unique representation.
+# Converting to denary
+- Work out the exponent, move the binary point that many places (right if positive), then convert.
+! Fixed number of bits = trade-off between range and precision.
+=== Truncation & rounding
+- Some numbers can't be stored exactly in binary (e.g. 0.1), so there are errors.
+- Truncation: extra bits/digits simply cut off (always rounds towards zero).
+- Rounding: to the nearest representable value.
+- Errors build up over repeated calculations (cumulative error).
+- Absolute error = |true - stored|; relative error = absolute / true.
+== Data structures
+=== Arrays
+- Fixed-size, ordered collection of items of the SAME data type, accessed by index.
+- Static: size set when declared. Stored contiguously in memory.
+- 1D: list, e.g. scores[0..9].
+- 2D: table, e.g. grid[row][col]. Use nested loops to traverse.
+! Know whether your language indexes from 0 or 1, and state it.
+=== Records
+- Collection of related fields that can be of DIFFERENT data types, e.g. Student: name (string), age (integer), paid (Boolean).
+- An array of records stores a table of data (like a file in memory).
+- Access a field with dot notation: student.name.
+=== Choosing a data structure
+- Same type, fixed number of items -> array.
+- Mixed types describing one thing -> record.
+- Table of data -> 2D array (same type) or array of records (mixed).
+- Size unknown/changing -> dynamic structure (list, linked list).
+! Justify in context: "array of 30 integers because each class has 30 test scores".
+== Organisation of data
+=== Files, records & fields
+- File: collection of related records. Record: all data about one item. Field: one data item in a record.
+- Key field: uniquely identifies each record.
+- Fixed length records: easier to process and calculate positions but can waste space.
+- Variable length: save space, harder to search/update.
+# File design
+- Decide fields, data types, lengths, key field, validation, organisation method.
+=== Master & transaction files
+- Master file: main permanent data, sorted by key (e.g. customer accounts).
+- Transaction file: changes collected over a period (e.g. today's payments).
+# Batch update (sequential)
+- Sort the transaction file into key order, then read both files together, apply changes, write a NEW master file.
+- The old master + transaction file act as a backup (grandfather-father-son).
+=== Serial & sequential files
+- Serial: records in the order they were added. New records appended at the end. e.g. transaction logs.
+- Sequential: records in key order.
+- Access: read from the start until found (slow for one record, fine for processing all records, e.g. payroll).
+- Good on tape and for batch processing.
+=== Indexed sequential
+- Records stored in key order AND an index holds the key of the last record in each block/area with its address.
+- Can process all records in order (sequential) or look up the index and jump to the block (direct).
+- Overflow areas used when blocks fill; file needs reorganising periodically.
+- e.g. a stock file read sequentially for reports and directly for enquiries.
+=== Direct (random) access
+- Record location calculated from its key using a hashing algorithm; go straight to it.
+- Very fast access to individual records. Needs direct access storage (disk).
+- Collisions (two keys -> same address) need handling (overflow area, next free slot).
+- Not suited to processing every record in order.
+! Pick the method to suit the use: real-time lookups -> direct; batch -> sequential.
+=== Validation
+- Checks data is sensible/allowed BEFORE accepting it. Can't check it's correct.
+- Presence: field not empty.
+- Range: within limits (age 11-18).
+- Type: right data type (number).
+- Length: correct number of characters.
+- Format/picture: pattern (e.g. postcode, LLNN NLL).
+- Lookup/list: value from a set (Y/N).
+- Check digit: extra digit calculated from the others (ISBN, barcodes).
+- Cross-field: fields consistent (end date after start date).
+=== Verification
+- Checks data was entered/copied ACCURATELY (matches the source).
+- Double entry: type twice, compare (passwords, emails).
+- Visual check / proofreading against the original.
+- Parity checks and checksums (for transmission).
+! Validation = reasonable; verification = accurate copy. Common 2-mark question.
+=== File security & archiving
+- Security: passwords, access rights (read/write), encryption, physical security, backups.
+- Backup: copy kept to restore data if lost. Full vs incremental, off-site/cloud, regular schedule.
+- Archiving: moving data no longer actively used to long-term storage (kept for legal/historical reasons), frees space on the main system.
+! Backup = copy for recovery; archive = old data moved off the live system.
+== Database systems
+=== Database concepts
+- Flat file: one table. Data redundancy (repeats), inconsistency risk.
+- Relational: several tables linked by keys. Less redundancy, more consistency, more flexible queries.
+- Entity: thing data is stored about (Student). Attribute: property (Name). Table = entity, column = attribute, row = record (tuple).
+=== Keys & indexes
+- Primary key: unique identifier for each record in a table.
+- Composite key: primary key made of 2+ attributes.
+- Foreign key: a primary key from another table, used to link tables.
+- Secondary key/index: extra field indexed for fast searching (e.g. surname).
+- Index: like a book index; speeds up searches but slows inserts/updates and uses space.
+=== Entity-relationship modelling
+- Relationships: one-to-one, one-to-many, many-to-many.
+- Draw crow's foot on the "many" end.
+- Many-to-many must be resolved with a link (junction) table holding both foreign keys, e.g. Student -< Enrolment >- Course.
+! Always state the foreign key that implements each relationship.
+=== DBMS & user views
+- DBMS: software that manages the database: data dictionary, security, access control, backup, concurrency, integrity.
+- User views: different users see only the data/fields they need (e.g. receptionist sees contact details, not medical notes). Improves security and simplicity.
+- Data dictionary: metadata (field names, types, sizes, validation, relationships).
+== The operating system
+=== Functions of the OS
+- Memory management: allocates RAM to programs, virtual memory.
+- Processor management: scheduling, multitasking.
+- Backing store/file management: directories, file allocation, access rights.
+- Device/peripheral management: drivers, buffers, interrupts.
+- Security: user accounts, permissions.
+- User interface.
+- Error handling, system logs.
+=== User interfaces
+- GUI (WIMP): windows, icons, menus, pointer. Easy to learn, intuitive; uses more resources.
+- Command line: typed commands. Fast for experts, powerful (scripts), low resources; hard to learn.
+- Menu driven: choose from options (ATMs). Simple, limited.
+- Natural language/voice: speak commands. Natural but accents, noise, ambiguity.
+- Touch/gesture: phones, tablets.
+=== Utility software
+- Small programs that maintain/improve the system.
+- Defragmenter, disk cleanup, antivirus, firewall, backup, compression, encryption, file managers, disk checkers.
+=== Batch vs real-time
+# Batch
+- Jobs collected and processed together later without user interaction. Efficient for large volumes. e.g. payroll, bills, exam marking.
+# Real-time
+- Input processed immediately so output affects the next input. e.g. air traffic control, booking systems (prevent double booking), process control.
+# Interactive/online
+- User and computer in dialogue, fast response, e.g. online shopping.
+=== Human-computer interaction
+- Design the interface around the user: experience level, age, disabilities, environment.
+- Consistency (same layout/buttons), clear feedback, error messages that help, minimal memory load, sensible defaults, undo.
+- Accessibility: font size, colour contrast, screen reader support, keyboard shortcuts.
+== Algorithms & programs
+=== Variables, constants & identifiers
+- Variable: named memory location whose value can change.
+- Constant: value fixed during execution (e.g. VAT = 0.2). Easier to update, avoids accidental change.
+- Identifier: the name. Use meaningful names (totalCost not x).
+- Self-documenting code: meaningful names, indentation, comments, white space.
+=== Scope
+- Local variable: declared inside a subroutine; only exists there. Saves memory, avoids side effects, allows same names elsewhere.
+- Global variable: declared outside; accessible anywhere. Easy to change accidentally, harder to debug.
+! Good practice: use local variables and pass parameters.
+=== Parameters
+- Values passed into a subroutine.
+- By value: a copy is passed; the original isn't changed.
+- By reference: the address is passed; changes affect the original.
+- Function returns a value; procedure doesn't.
+=== DIV & MOD
+- DIV: integer division (quotient). 17 DIV 5 = 3.
+- MOD: remainder. 17 MOD 5 = 2.
+- Uses: even/odd (n MOD 2), digits of a number (n MOD 10, n DIV 10), wrapping around (circular queue), converting minutes to hours.
+=== Bubble sort
+- Compare adjacent pairs; swap if in the wrong order. Repeat passes until a pass has no swaps.
+- After each pass the largest item "bubbles" to the end.
+- Simple, but slow: O(n^2). Good for small or nearly sorted lists (with the no-swaps flag).
+# Pseudo-code
+- repeat
+-   swapped = false
+-   for i = 0 to n-2
+-     if a[i] > a[i+1] then swap; swapped = true
+- until not swapped
+=== Insertion sort
+- Build a sorted part one item at a time: take the next item and insert it into the correct place in the sorted part (shifting larger items right).
+- O(n^2) worst case, but fast on nearly sorted data. In place, simple.
+# Pseudo-code
+- for i = 1 to n-1
+-   item = a[i]; j = i-1
+-   while j >= 0 and a[j] > item: a[j+1] = a[j]; j = j-1
+-   a[j+1] = item
+=== Linear search
+- Check each item in turn from the start until found or the end is reached.
+- Works on unsorted data. O(n): slow for large lists.
+=== Binary search
+- Data MUST be sorted.
+- Look at the middle item; if it's the target, stop; if the target is smaller, discard the upper half, else discard the lower half. Repeat.
+- O(log n): very fast. 1000 items needs at most 10 comparisons.
+# Pseudo-code
+- low = 0, high = n-1
+- while low <= high
+-   mid = (low + high) DIV 2
+-   if a[mid] = target return mid
+-   else if a[mid] < target low = mid + 1 else high = mid - 1
+- return not found
+=== Programming constructs
+- Sequence: instructions in order.
+- Selection: IF / ELSE / CASE.
+- Iteration: count-controlled (FOR), condition-controlled (WHILE checks first, may run 0 times; REPEAT UNTIL checks after, runs at least once).
+- Logical operators AND, OR, NOT in conditions.
+=== Modular programming
+- Split a program into subroutines (procedures/functions) or modules.
+- Benefits: easier to test and debug, reuse code (libraries), teams work in parallel, easier maintenance, clearer structure.
+- Top-down design / stepwise refinement: break the problem into smaller sub-problems.
+=== Compression
+- Reduces file size: less storage, faster transmission.
+# Lossy
+- Permanently removes less important data (JPEG, MP3, MP4). Much smaller. Can't get the original back. Fine for media.
+# Lossless
+- Original can be rebuilt exactly (ZIP, PNG). Needed for text/programs.
+- Run-length encoding: repeated values stored as value + count (AAAABB -> 4A2B).
+- Dictionary encoding: repeated words/patterns replaced by short codes.
+=== Testing & test data
+- Normal (typical): valid data that should be accepted.
+- Boundary (extreme): at the edges of the valid range (and just outside).
+- Erroneous (invalid): wrong type or out of range; should be rejected.
+- Test plan: test number, purpose, data, expected result, actual result.
+! For age 11-18: normal 15, boundary 11 and 18 (and 10, 19), erroneous "abc" or -3.
+== Principles of programming
+=== Programming paradigms
+- Procedural: sequence of instructions grouped into procedures (Python, C).
+- Object-oriented: objects combine data + methods (Java, C#).
+- Declarative/logic: state facts and rules, the language finds answers (Prolog, SQL).
+- Functional: functions with no side effects (Haskell).
+- Event-driven: code responds to events like clicks (GUIs, VB.NET).
+=== Object-oriented concepts
+- Class: blueprint/template defining attributes and methods.
+- Object: an instance of a class.
+- Attribute: data held by an object. Method: subroutine belonging to the class.
+- Encapsulation: data and methods bundled; attributes private, accessed through methods (data hiding).
+- Inheritance: subclass takes attributes and methods of a superclass and can add its own (reuse).
+- Polymorphism: same method name behaves differently for different classes (overriding).
+=== High vs low level languages
+# High level
+- English-like, portable (machine independent), easier to write/debug, one statement = many machine instructions. Needs compiling/interpreting.
+# Low level
+- Machine code (binary) and assembly (mnemonics like LDA, ADD).
+- Direct hardware control, very efficient/fast, small. Hard to write and processor-specific.
+- Used for device drivers, embedded systems.
+== Systems analysis
+=== Feasibility study
+- Is the new system worth doing? TELOS:
+- Technical: hardware/software available?
+- Economic: costs vs benefits.
+- Legal: complies with laws (data protection).
+- Operational: will it work with the organisation and staff?
+- Schedule: can it be done in time?
+=== Investigation methods
+- Interviews: detailed, follow-up questions; time consuming, few people.
+- Questionnaires: many people, anonymous, quick to analyse; low response, can't follow up.
+- Observation: see the real process; people may act differently when watched.
+- Document analysis: inputs/outputs of the current system; may be out of date.
+=== Design diagrams
+- Data flow diagram: how data moves between external entities, processes and data stores.
+- System flowchart: overview of the whole system, inputs, processes, files.
+- Program flowchart: logic of an algorithm (start/stop, process, decision, input/output).
+- Structure diagram: top-down breakdown into modules.
+- ER diagram, HCI/screen designs, data dictionary.
+=== Changeover methods
+- Direct: old system stops, new starts. Cheap, fast; risky if it fails.
+- Parallel: both run together. Safe, can compare outputs; costly, double work.
+- Phased: introduced in stages. Lower risk; slow.
+- Pilot: one branch/department first, then rolled out. Problems found on a small scale; slower.
+! Recommend a method for the scenario and justify (e.g. hospital -> parallel, safety critical).
+=== Types of testing
+- Unit/module: each part tested alone.
+- Integration: parts tested together.
+- System: whole system.
+- Alpha: by developers/in-house.
+- Beta: by real users outside, report bugs.
+- Acceptance: client checks it meets requirements before sign-off.
+- White box: tests internal logic/paths. Black box: tests inputs vs outputs only.
+=== Maintenance
+- Corrective: fix bugs found after release.
+- Adaptive: change to suit new environment (new OS, laws, hardware).
+- Perfective: improve performance/features as users request.
+- Good documentation and modular code make maintenance easier.
+=== Backup & recovery
+- Regular backups, stored off-site/cloud.
+- Full backup: everything; incremental: changes since last backup (faster, slower to restore).
+- Grandfather-father-son: keep 3 generations.
+- Recovery plan: who does what, how quickly, testing restores.
+=== Documentation
+# User documentation
+- How to use the system: installation, tutorials, FAQs, troubleshooting, screenshots. Non-technical.
+# Technical documentation
+- For maintenance: algorithms, data dictionary, diagrams, annotated code, test plans, hardware/software requirements.
+== Software engineering
+=== IDE features
+- Editor: syntax highlighting, auto-indent, auto-complete.
+- Error diagnostics: highlights syntax errors.
+- Translator built in (compile/run).
+# Debugging tools
+- Breakpoints: pause at a line.
+- Stepping: run one line at a time.
+- Watch window: view variable values as the program runs.
+- Trace / call stack, variable inspection.
+! Explain HOW a tool helps find a logic error, not just name it.
+== Program construction
+=== Stages of compilation
+- Lexical analysis: remove comments/whitespace, split code into tokens, build symbol table.
+- Syntax analysis: check tokens follow the grammar rules; build a parse tree; report syntax errors.
+- Semantic analysis: checks meaning, e.g. type errors, undeclared variables.
+- Code generation: produce object/machine code.
+- Optimisation: make code faster/smaller (remove redundant instructions).
+- Linking: combine with library code to produce an executable.
+== Types of software
+=== Open source vs proprietary
+- Open source: source code available, can modify/share, usually free, community support. May lack official support.
+- Proprietary (closed): code hidden, licence fee, official support and updates, can't modify.
+=== Bespoke vs off-the-shelf
+- Bespoke (custom): written for one client's exact needs. Expensive, slow to develop, fully tailored, may have more bugs initially.
+- Off-the-shelf: ready-made, cheaper, available now, well tested, support/community; may not fit exactly, may include unneeded features.
+=== Applications & expert systems
+- Industrial: process control, robotics, CAD/CAM.
+- Technical/scientific: simulations, modelling, weather forecasting, data analysis.
+# Expert system
+- Knowledge base: facts and rules from human experts.
+- Inference engine: applies rules to the facts to reach conclusions.
+- User interface: questions and answers; explanation facility says how it reached the answer.
+- Uses: medical diagnosis, fault finding, financial advice. Pros: consistent, available 24/7. Cons: no common sense, only as good as its rules.
+== Data security & integrity
+=== Risks to personal data
+- Hacking/unauthorised access, identity theft, data loss, theft of devices, interception, insider misuse, phishing.
+- Data integrity: data is accurate, complete and consistent.
+=== Protection processes
+- Passwords and 2FA, user access levels, encryption, firewalls, antivirus, physical security (locks, ID cards), audit logs, staff training, backups, secure disposal.
+=== Disaster recovery
+- Threats: fire, flood, hardware failure, power cut, cyber attack.
+- Plan: risk analysis, backup strategy (off-site), standby hardware/site (hot/cold sites), UPS, recovery procedures, testing the plan, staff roles.
+=== Malicious vs accidental damage
+- Malicious: viruses, hacking, deliberate deletion, sabotage by staff.
+- Accidental: user error, deleting files, spills, hardware failure, power loss.
+- Prevention: access rights, backups, training, validation, confirmation prompts.
+== Economic, moral, legal & ethical
+=== Legislation
+- Data Protection Act 2018 (UK GDPR): data processed lawfully, for specified purposes, accurate, kept no longer than needed, secure; individuals' rights to access/erase data.
+- Computer Misuse Act 1990: illegal to gain unauthorised access, access with intent to commit crime, or modify/impair data (e.g. viruses).
+- Copyright, Designs and Patents Act 1988: protects software and media from copying/distribution without permission.
+- Regulation of Investigatory Powers Act 2000: allows authorities to intercept communications under warrant.
+=== Social & economic impacts
+- Employment: jobs lost to automation, new jobs in IT; reskilling needed; remote working.
+- Digital divide: unequal access by income, age, location.
+- Privacy and surveillance, data collection by companies.
+- Globalisation, e-commerce, effects on high street shops.
+- Environment: e-waste, energy use of data centres; but less travel/paper.
+! Give balanced answers: one positive, one negative, and a conclusion.

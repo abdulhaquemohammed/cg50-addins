@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.15)
+project(ALevelMaths)
+include(GenerateG3A)
+include(Fxconv)
+find_package(Gint 2.9 REQUIRED)
+set(C ${CMAKE_CURRENT_SOURCE_DIR}/../../common)
+set(F ${CMAKE_CURRENT_SOURCE_DIR}/../../fm)
+set(M ${CMAKE_CURRENT_SOURCE_DIR}/../../maths)
+set(SOURCES src/main.c ${C}/num.c ${C}/expr.c ${C}/la.c ${C}/ui.c ${C}/util.c ${C}/stats.c ${C}/plat_gint.c
+  ${F}/u1.c ${F}/u2.c ${F}/u3.c ${F}/u4.c ${F}/u6.c
+  ${M}/m1.c ${M}/m2.c ${M}/m3.c ${M}/m4.c ${M}/app.c)
+set(ASSETS_cg assets-cg/calcfont.png)
+fxconv_declare_assets(${ASSETS_cg} WITH_METADATA)
+add_executable(maths ${SOURCES} ${ASSETS_cg})
+target_compile_options(maths PRIVATE -Wall -O2 -Wno-unused-function)
+target_link_libraries(maths Gint::Gint -lm)
+generate_g3a(TARGET maths OUTPUT "ALevelMaths.g3a" NAME "A Level Maths" ICONS assets-cg/icon-uns.png assets-cg/icon-sel.png)

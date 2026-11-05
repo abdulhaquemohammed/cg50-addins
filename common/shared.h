@@ -1,0 +1,23 @@
+#ifndef SHARED_H
+#define SHARED_H
+void c_arith(void);
+void c_quad(void);
+void v_products(void);
+void v_line(void);
+void v_dist(void);
+void s_numeric(void);
+void cr_pmcc(void);
+void cr_regress(void);
+void p_poisson(void);
+void d_table(void);
+void ch_gof(void);
+void t_general(void);
+void t_rform(void);
+void s_partial(void);
+void k_integral(void);
+void k_deriv(void);
+void p_convert(void);
+void vc_fromr(void);
+void vc_froma(void);
+void rb_moments(void);
+#endif

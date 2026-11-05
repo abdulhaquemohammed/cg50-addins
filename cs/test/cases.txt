@@ -1,0 +1,33 @@
+WJEC18 4a|!(A.B)+A|1
+WJEC18 4b|A.B.(!B+C)+B.C+B|B
+WJEC19 2a|A.!A+A.B+A.!B+B.!B|A
+WJEC19 2b|!(A.B)+A.C+B|1
+WJEC22 3a|(A+C).(A.C+A.!C)+A.C|A
+WJEC22 3b|!(X.Y).(!X+Y)+!Z|!X+!Z
+WJEC23 4a|A.(1+C)+!B.(A+B)|A
+WJEC23 4b|X.!(Y+Z)+!Z.X|X.!Z
+WJEC24 3a|(1.X+!(Y.Y)).!X+X.Z|!X.!Y+X.Z
+WJEC24 3b|(!A.A+A.A).1+B.C.0|A
+WJEC17 5a|A.!(A.B)|A.!B
+WJEC17 5b|A.B+A.(B+C)+B.(B+C)|A.C+B
+WJEC KO|A.(A+B)+C.(A+B)+A.(B+C)+B.B|A+B
+AQA Q1|A.(!B+0)+!A.(B+B)|A.!B+!A.B
+AQA Q6|!W.X.Z+W.Z+X.Y.!Z+!W.X.Y.1|X.Z+X.Y+W.Z
+AQA Q3|(A+B).(B+C.(D+!D))|A.C+B
+AQA 11c|(X+Y).(X+!Y)|X
+AQA 11b|A.B.(A+B)|A.B
+AQA 20d|A.(B+1)|A
+AQA 20b|B+B.!A|B
+AQA 20c|A.B+A.!B|A
+AQA Q4|!(A+B)+!(A.B)|!A+!B
+AQA Q12|!A.(B.C.D+B.C.!D+B)+!(A+!B)|!A.B
+CLASSIC1|A.B+!A.C+B.C|A.B+!A.C
+CLASSIC2|!(!A.!B)|A+B
+CLASSIC3|(A+B).(A+C)|A+B.C
+CLASSIC4|A+!A.B|A+B
+CLASSIC5|!(A.!B)+!(!A.B)|1
+WJEC25 3bi|A.(!A+B)+!B.(A+C)+A.B|A+!B.C
+WJEC25 3bii|z.!(z+y)+x.y.(!z+z)|x.y
+WJEC SP 4a|(A+B).(A+!B)|A
+WJEC SP 4b|C+!(B.C)|1
+WJEC SP 4c|A+(A+!(B.C))+!C|A+!B+!C
